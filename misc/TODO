@@ -1,3 +1,6 @@
+[System]
+	Podman(as non root)
+
 [Install]
 	ghcup
 	rustup
