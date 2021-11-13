@@ -6,17 +6,36 @@ if status --is-login
    set -a PATH "$HOME/.cabal/bin"
    set -a PATH "$HOME/.ghcup/bin"
    set -a PATH "$HOME/.emacs.d/bin"
-   set -x BROWSER "librewolf"
+   set -a PATH "$HOME/.local/bin"
+   set -x BROWSER "firefox"
+   emacs --daemon &
    startx &> /dev/null
 end
 
-alias o     sudo
+function o
+   if test -f /usr/bin/doas
+      doas $argv
+   else if test -f /usr/bin/sudo
+      sudo $argv
+   else
+      echo 'sudo/doas not found, cannot gain root privelidges'.
+   end
+end
 
-alias cat   "bat --theme OneHalfDark"
-alias lcat  "bat --theme OneHalfDark --plain"
-alias pcat  "bat --theme OneHalfDark --paging=never"
-alias hcat  "bat --theme OneHalfDark -H"
-alias rcat  "bat --theme OneHalfDark -r"
+function safeAlias
+   if not type -q $argv[2]
+      return
+   end
+
+   alias $argv[1] $argv[3]
+
+end
+
+safeAlias cat	bat	"bat --theme OneHalfDark"
+safeAlias lcat	bat	"bat --theme OneHalfDark --plain"
+safeAlias pcat  bat	"bat --theme OneHalfDark --paging=never"
+safeAlias hcat  bat	"bat --theme OneHalfDark -H"
+safeAlias rcat  bat	"bat --theme OneHalfDark -r"
 
 
 alias ls    "lsd"
